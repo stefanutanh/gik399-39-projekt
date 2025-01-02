@@ -1,9 +1,6 @@
-console.log("message")
-
 const express = require("express");
 const server = express();
 const sqlite3 = require("sqlite3");
-const port = 3000;
 
 server
   .use(express.json())
@@ -16,6 +13,21 @@ server
     next();
   });
 
-  server.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+server.get("/films", (req, res) => {
+  const db = new sqlite3.Database("./projekt.db");
+  const sql = "SELECT * FROM films";
+
+  db.all(sql, (err, rows) => {
+    if (err) {
+      return res
+        .status(500)
+        .send({ error: "Database error", details: err.message });
+    }
+    res.send(rows);
   });
+  db.close();
+});
+
+server.listen(3000, () =>
+  console.log("Running server on http://localhost:3000")
+);
