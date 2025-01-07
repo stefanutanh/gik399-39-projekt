@@ -27,5 +27,5 @@ INSERT INTO films(id,title,year,director,genre) VALUES
 INSERT INTO films(id,title,year,director,genre) VALUES 
 (10,'Min granne Totoro', 1988, 'Hayao Miyazaki', 'Anime');
 
-select * from films;
+SELECT * FROM films;
 

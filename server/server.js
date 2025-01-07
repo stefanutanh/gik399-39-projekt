@@ -1,6 +1,6 @@
 const express = require("express");
 const server = express();
-const sqlite3 = require("sqlite3");
+const sqlite3 = require("sqlite3").verbose();
 
 server
   .use(express.json())
@@ -24,6 +24,22 @@ server.get("/films", (req, res) => {
         .send({ error: "Database error", details: err.message });
     }
     res.send(rows);
+  });
+  db.close();
+});
+
+server.post("/films", (req, res) => {
+  const films = req.body; 
+  const db = new sqlite3.Database("./projekt.db");
+  const sql = `INSERT INTO films (title, year, director, genre) VALUES (?, ?, ?, ?)`;
+
+    db.run(sql, Object.values(films), (err) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send(err);
+    } else {
+      res.send("Film added successfully!");
+    }
   });
   db.close();
 });
