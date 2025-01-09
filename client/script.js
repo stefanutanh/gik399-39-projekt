@@ -1,118 +1,107 @@
 const url = "http://localhost:3000/films";
+const filmForm = document.querySelector('#filmForm'); 
+const listContainer = document.querySelector('#listContainer');
 
-function fetchData() {
-    const existingUl = document.querySelector('ul');
-    if (existingUl) {
-        existingUl.remove();
-    }
-
+// Hämtar filmer från servern
 fetch(url)
-    .then((response) => {
-        return response.json(); // Översätt svaret till JSON
-    })
+  .then((response) => {
+    console.log('Hämtar filmer...');
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    console.log('Hämtning utförd!');
+    return response.json();
+  })
+  .then((films) => {
+    console.log('Hämtade filmer från databasen: ', films);
+    const ul = document.createElement('ul');
 
-    .then((films) => {
-        console.log(films);
-        // Skapa ul-elementet
-        const ul = document.createElement('ul');
-    
-        // Loopa igenom användarna och skapa li-element för varje användare
-        films.forEach(film => {
-            const li = document.createElement('li'); // Skapa ett li-element
-            // Skapa innehållet för varje li-element
-            li.innerHTML = `Title: ${film.title} // Year: ${film.year} // Director: ${film.director} // Genre: ${film.genre}`; // Skriv ut användarens namn och användarnamn
-            
-            const deleteButton = document.createElement('button');
-            deleteButton.textContent = "Ta bort"; // Texten på knappen
-            li.appendChild(deleteButton);
+    // Loopa igenom filmer och skapa li-element för varje film
+    films.forEach(film => {
+        const li = document.createElement('li');
+        li.innerHTML = `Title: ${film.title} // Year: ${film.year} // Director: ${film.director} // Genre: ${film.genre}`; 
+        
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = "Ta bort"; 
+        li.appendChild(deleteButton);
 
-            const changeButton = document.createElement('button');
-            changeButton.textContent = "Ändra"; // Texten på knappen
-            li.appendChild(changeButton);
+        const changeButton = document.createElement('button');
+        changeButton.textContent = "Ändra"; 
+        li.appendChild(changeButton);
+        ul.appendChild(li); 
 
-            // function deleteFilms(id) {
-            //     console.log('delete', id);
-            //     fetch(`${url}/${id}`, { method: 'DELETE'}).then((result) => fetchData());
-            // }
-
-            ul.appendChild(li); // Lägg till li-elementet i ul-elementet
+        // Event för "Ta bort"
+        deleteButton.addEventListener('click', () => {
+          console.log('Delete button clicked for film:', film);
+          if (confirm('Är du säker på att du vill ta bort denna film?')) {
+            console.log('Confirmed deletion for film:', film.title);
+            fetch(`${url}/${film.id}`, { method: 'DELETE' })
+              .then((response) => {
+                if (!response.ok) {
+                  throw new Error(`Error deleting film: ${response.statusText}`);
+                }
+                console.log('Film successfully deleted from server:', film.title);
+                li.remove();
+              })
+              .catch((error) => console.error('Error removing film:', error));
+          } else {
+            console.log('Deletion canceled for film:', film.title);
+          }
         });
-
-        // Lägg till ul-elementet på sidan
-        document.body.appendChild(ul);
-    })
-    .catch((error) => {
-        console.error("Error fetching data:", error);
     });
+    listContainer.appendChild(ul);
+    console.log('Alla filmer hämtade.');
+  })
+  .catch((error) => console.error('Error fetching films:', error));
 
-}
+// Hanterar formulärets submit-event
+filmForm.addEventListener('submit', handleSubmit);
 
-fetchData();
+function handleSubmit(e) {
+  e.preventDefault();
+  console.log('Form submitted.');
+  
+  const serverfilmObject = {
+    title: filmForm.title.value,
+    year: filmForm.year.value,
+    director: filmForm.director.value,
+    genre: filmForm.genre.value,
+  };
 
-    const submitButton=document.querySelector('#submitButton');
-    const form = document.querySelector('#filmForm');
+  console.log('Film data from form:', serverfilmObject);
 
-    // console.log(submit);
-    submitButton.addEventListener('click', handleSubmit);
+  if (!filmForm.title.value || !filmForm.year.value || !filmForm.director.value || !filmForm.genre.value) {
+    alert('Vänligen fyll i alla fält');
+    console.log('Form validation failed. Missing fields.');
+    return;
+  }
 
-    function handleSubmit(e) {
-    e.preventDefault();
-    
-    const title = document.getElementById('titleInput').value;
-    const year = document.getElementById('yearInput').value;
-    const director = document.getElementById('directorInput').value;
-    const genre = document.getElementById('genreInput').value;
+  const jsonData = JSON.stringify(serverfilmObject);
+  console.log('JSON data to send:', jsonData);
 
+  const filmRequest = new Request(url, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: jsonData,
+  }); 
 
-    if (!title || !year || !director || !genre) {
-        alert("Alla fält måste fyllas i innan du kan lägga till en film!");
-        return;
-       } 
-
-    const serverFilmsObject = {
-        title: title,
-        year: year,
-        director: director,
-        genre: genre,
-    };
-
-    console.log("Data to be sent to server:",serverFilmsObject);
-
-    fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(serverFilmsObject),
+  console.log('Sending POST request to server...');
+  fetch(filmRequest)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Error adding film: ${response.statusText}`);
+      }
+      console.log('Film successfully added to server.');
+      filmForm.reset();
+      console.log("Rensar fält");
+      return response.json();
     })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error("Failed to add film");
-            }
-            console.log("Film added successfully");
-            document.getElementById('filmForm').reset(); // Återställ formuläret
-            fetchData();
-            alert("Filmen har lagts till!")
-           
-        })
-        .catch((error) => { 
-            console.error("Error adding film:", error);
-        });
-
-        return false;
-    }
-    
-    const deleteButton = document.createElement('button');
-    deleteButton.addEventListener('click', deleteFilms);
-    // changeButton.addEventListener('click', changeFilms);
-    
-    function deleteFilms(e) {
-        e.preventDefault();
-    }
-
-    // function changeFilms(e) {
-    //     e.preventDefault();
-
-    //     const filmId = document.getElementById('
-    // }
-
+    .then((data) => {
+      console.log('Response from server after adding film:', data);
+      const newFilmHtml = `<p>${data.title}</p>`;
+      document.body.insertAdjacentHTML('beforeend', newFilmHtml);
+      console.log('New film added to DOM:', data.title);
+      
+    })
+    .catch((error) => console.error('Error adding film:', error));
+}

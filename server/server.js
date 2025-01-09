@@ -61,7 +61,6 @@ server.delete("/films/:id", (req, res) => {
 });
 
 
-server.put
 
 server.listen(3000, () =>
   console.log("Running server on http://localhost:3000")
