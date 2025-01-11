@@ -1,10 +1,7 @@
 const url = "http://localhost:3000/films";
 const filmForm = document.querySelector('#filmForm'); 
 const listContainer = document.querySelector('#listContainer');
-const myModal = document.getElementById('myModal')
-myModal.addEventListener('shown.bs.modal', () => {
-  myInput.focus()
-})
+
 
 
 
@@ -27,7 +24,7 @@ fetch(url)
         const li = document.createElement('li');
         li.innerHTML = `Title: ${film.title} // Year: ${film.year} // Director: ${film.director} // Genre: ${film.genre}`; 
         
-        // Skapa och konfigurera deleteButton
+        // Skapa och ändra deleteButton
         const deleteButton = document.createElement('button');
         const deleteIcon = document.createElement('img'); 
         deleteIcon.src = 'img/delete.png'; 
@@ -38,7 +35,7 @@ fetch(url)
         deleteButton.appendChild(deleteIcon); 
         li.appendChild(deleteButton); 
 
-        // Skapa och konfigurera changeButton
+        // Skapa och ändra changeButton
         const changeButton = document.createElement('button');
         const changeIcon = document.createElement('img'); 
         changeIcon.src = 'img/pencil.png'; 
@@ -48,7 +45,7 @@ fetch(url)
         changeIcon.style.margin = '3px';
         changeButton.appendChild(changeIcon); 
         li.appendChild(changeButton); 
-        
+
         ul.appendChild(li); 
 
       
