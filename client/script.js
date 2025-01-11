@@ -1,6 +1,12 @@
 const url = "http://localhost:3000/films";
 const filmForm = document.querySelector('#filmForm'); 
 const listContainer = document.querySelector('#listContainer');
+const myModal = document.getElementById('myModal')
+myModal.addEventListener('shown.bs.modal', () => {
+  myInput.focus()
+})
+
+
 
 // Hämtar filmer från servern
 fetch(url)
@@ -30,7 +36,7 @@ fetch(url)
         li.appendChild(changeButton);
         ul.appendChild(li); 
 
-        // Event för "Ta bort"
+      
         deleteButton.addEventListener('click', () => {
           console.log('Delete button clicked for film:', film);
           if (confirm('Är du säker på att du vill ta bort denna film?')) {
@@ -54,7 +60,7 @@ fetch(url)
   })
   .catch((error) => console.error('Error fetching films:', error));
 
-// Hanterar formulärets submit-event
+// Hanterar formulärets submit-knapp
 filmForm.addEventListener('submit', handleSubmit);
 
 function handleSubmit(e) {

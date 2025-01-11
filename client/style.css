@@ -1,8 +1,0 @@
-#listContainer2 {
-    background-image: url('./img/tv.png');
-    background-size: contain;  /* Gör att bilden täcker hela div-en */
-    background-position: left;  /* Justera bilden för att vara centrerad */
-    background-repeat: no-repeat;  /* Se till att bilden inte upprepas */
-    height: 660px; /* Ange höjd på din div om du vill att bakgrundsbilden ska synas ordentligt */
-  }
-  
