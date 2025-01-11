@@ -27,13 +27,28 @@ fetch(url)
         const li = document.createElement('li');
         li.innerHTML = `Title: ${film.title} // Year: ${film.year} // Director: ${film.director} // Genre: ${film.genre}`; 
         
+        // Skapa och konfigurera deleteButton
         const deleteButton = document.createElement('button');
-        deleteButton.textContent = "Ta bort"; 
-        li.appendChild(deleteButton);
+        const deleteIcon = document.createElement('img'); 
+        deleteIcon.src = 'img/delete.png'; 
+        deleteIcon.alt = 'Delete'; 
+        deleteIcon.style.width = '20px';
+        deleteIcon.style.height = '20px';
+        deleteIcon.style.margin = '3px';
+        deleteButton.appendChild(deleteIcon); 
+        li.appendChild(deleteButton); 
 
+        // Skapa och konfigurera changeButton
         const changeButton = document.createElement('button');
-        changeButton.textContent = "Ändra"; 
-        li.appendChild(changeButton);
+        const changeIcon = document.createElement('img'); 
+        changeIcon.src = 'img/pencil.png'; 
+        changeIcon.alt = 'Edit'; 
+        changeIcon.style.width = '20px';
+        changeIcon.style.height = '20px';
+        changeIcon.style.margin = '3px';
+        changeButton.appendChild(changeIcon); 
+        li.appendChild(changeButton); 
+        
         ul.appendChild(li); 
 
       
