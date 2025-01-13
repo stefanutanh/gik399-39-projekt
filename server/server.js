@@ -60,6 +60,22 @@ server.delete("/films/:id", (req, res) => {
   });
 });
 
+server.put("/films", (req, res) => {
+  const films = req.params.id; 
+  const db = new sqlite3.Database("./projekt.db");
+  const sql = `UPDATE films SET title = ?, year = ?, director = ?, genre = ? WHERE id = ?`;
+
+    db.run(sql,Object.values(films), (err) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send(err);
+    } else {
+      res.send("Film tillagd");
+    }
+  });
+  db.close();
+});
+
 
 
 server.listen(3000, () =>

@@ -21,9 +21,14 @@ fetch(url)
 
     // Loopa igenom filmer och skapa li-element för varje film
     films.forEach(film => {
+        
         const li = document.createElement('li');
         li.innerHTML = `Title: ${film.title} // Year: ${film.year} // Director: ${film.director} // Genre: ${film.genre}`; 
         
+        if (film.genre === 'Anime') {
+          li.style.backgroundColor = 'red';
+        }
+
         // Skapa och ändra deleteButton
         const deleteButton = document.createElement('button');
         const deleteIcon = document.createElement('img'); 
@@ -46,6 +51,7 @@ fetch(url)
         changeButton.appendChild(changeIcon); 
         li.appendChild(changeButton); 
 
+       
         ul.appendChild(li); 
 
       
@@ -66,6 +72,17 @@ fetch(url)
             console.log('Deletion canceled for film:', film.title);
           }
         });
+
+        changeButton.addEventListener('click', () => {
+          console.log('Change button clicked for film:', film);
+
+          filmForm.title.value = film.title;
+          filmForm.year.value = film.year;
+          filmForm.director.value = film.director;
+          filmForm.genre.value = film.genre;
+
+          filmForm.dataset.editingFilmId = film.id;
+        });
     });
     listContainer.appendChild(ul);
     console.log('Alla filmer hämtade.');
@@ -75,6 +92,7 @@ fetch(url)
 // Hanterar formulärets submit-knapp
 filmForm.addEventListener('submit', handleSubmit);
 
+// HANDLESUBMITFUNKTION
 function handleSubmit(e) {
   e.preventDefault();
   console.log('Form submitted.');
@@ -84,7 +102,11 @@ function handleSubmit(e) {
     year: filmForm.year.value,
     director: filmForm.director.value,
     genre: filmForm.genre.value,
+    
   };
+
+  const jsonData = JSON.stringify(serverfilmObject);
+  console.log('JSON data to send:', jsonData);
 
   console.log('Film data from form:', serverfilmObject);
 
@@ -93,9 +115,13 @@ function handleSubmit(e) {
     console.log('Form validation failed. Missing fields.');
     return;
   }
+  
 
-  const jsonData = JSON.stringify(serverfilmObject);
-  console.log('JSON data to send:', jsonData);
+  const editingFilmId = filmForm.dataset.editingFilmId;
+  const method = editingFilmId ? 'PUT' : 'POST';
+  const endpoint = editingFilmId ? `${url}/${editingFilmId}` : url;
+  
+  
 
   const filmRequest = new Request(url, {
     method: 'POST',
