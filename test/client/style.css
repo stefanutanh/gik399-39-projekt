@@ -62,6 +62,12 @@
 .card.genre-drama {
   background-color: #b3e5fc;
 }
+.card.genre-sci-fi {
+  background-color: #fcddb3;
+}
+.card.genre-comedy {
+  background-color: #f13a3a;
+}
 
 .thunder {
   min-width: auto;

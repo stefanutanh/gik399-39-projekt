@@ -111,7 +111,7 @@ function filmLista() {
                         </p>
                         <div class="card-footer bg-transparent border-0 pt-0">
                             <button onclick="editFilm(${film.id})" class="btn btn-warning btn-sm">Edit</button>
-                            <button onclick="deleteTask(${film.id})" class="btn btn-danger btn-sm">Delete</button>
+                            <button onclick="deleteFilm(${film.id})" class="btn btn-danger btn-sm">Delete</button>
                         </div>
                     </div>
                 `;
@@ -137,7 +137,7 @@ function editFilm(id) {
     const titleInput = document.querySelector('#title');
     const yearInput = document.querySelector('#year');
     const directorInput = document.querySelector('#director');
-    const genreInput = document.querySelector('#genre');
+    const genreInput = document.querySelector('#genreInput');
     
     // Fyll i formuläret med filmens värden
     if (titleInput) titleInput.value = film.title;
