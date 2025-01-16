@@ -101,13 +101,17 @@ function filmLista() {
                 col.className = 'thunder d-flex col-3 col-md-2 col-sm m-2';                 
                 const card = document.createElement('div');
                 card.className = `card genre-${film.genre.toLowerCase()}`; 
+
+                const genreText = [...document.querySelectorAll('#genreInput option')]
+                .find(option => option.value === film.genre)?.textContent || film.genre;
+
                 
                 card.innerHTML = `
                     <div class="card-body">
                         <h5 class="card-title">${film.title} <span class="text-muted">(${film.year})</span></h5>
                         <p class="card-text">
                             <strong>Director:</strong> ${film.director}<br>
-                            <strong>Genre:</strong> ${film.genre}
+                            <strong>Genre:</strong> <p>${genreText}</p>
                         </p>
                         <div class="card-footer bg-transparent border-0 pt-0">
                             <button onclick="editFilm(${film.id})" class="btn btn-warning btn-sm">Edit</button>
