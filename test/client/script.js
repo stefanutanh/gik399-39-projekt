@@ -137,7 +137,7 @@ function editFilm(id) {
     const titleInput = document.querySelector('#title');
     const yearInput = document.querySelector('#year');
     const directorInput = document.querySelector('#director');
-    const genreInput = document.querySelector('#genre');
+    const genreInput = document.querySelector('#genreInput');
     
     // Fyll i formuläret med filmens värden
     if (titleInput) titleInput.value = film.title;
