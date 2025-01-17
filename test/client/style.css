@@ -46,27 +46,34 @@
 
 .card.genre-anime {
   background-color: #ffcdd2;
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(15px);
 }
-
 .card.genre-action {
-  background-color: #c8e6c9;
+  background-color: rgba(0, 255, 234, 0.579);
   background-color: rgba(255, 255, 255, 0.45);
   box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
   backdrop-filter: blur(15px);
 }
-
 .card.genre-horror {
-  background-color: #fff9c4;
+  background-color: #e3690b;
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(15px);
 }
-
 .card.genre-drama {
   background-color: #b3e5fc;
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(15px);
 }
 .card.genre-sci-fi {
-  background-color: #fcddb3;
+  background-color: #fcddb3bb;
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(15px);
 }
 .card.genre-comedy {
-  background-color: #f13a3a;
+  background-color: #f13a3a96;
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(15px);
 }
 
 .thunder {
@@ -75,3 +82,5 @@
   flex-direction: column;
   justify-content: space-between;  
 }
+
+

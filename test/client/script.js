@@ -77,7 +77,7 @@ const createFilmCard = (film) => {
                 <h5 class="card-title">${film.title} <span class="text-muted">(${film.year})</span></h5>
                 <p class="card-text">
                     <strong>Director:</strong> ${film.director}<br>
-                    <strong>Genre:</strong> <p>${genreText}</p>
+                    <strong>Genre:</strong> ${genreText}
                 </p>
                 <div class="card-footer bg-transparent border-0 pt-0">
                     <button onclick="editFilm(${film.id})" class="btn btn-warning btn-sm">Edit</button>
