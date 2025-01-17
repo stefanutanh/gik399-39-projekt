@@ -1,3 +1,86 @@
-ul {
-    background-color: gold;
+:root {
+    font-size: 75%;
+  }
+  
+  *,
+  *:before,
+  *:after {
+    box-sizing: border-box;
+  }
+  
+  body {
+    font: 1.5em Inter, sans-serif;
+    margin: 0;
+    color: #224;
+    background:
+      url(https://i.ibb.co/Qjt7TJn/milad-fakurian-E8-Ufcyxz514-unsplash-1.jpg)
+      center / cover no-repeat fixed;
+  }
+  
+
+  .site-container {
+    display: grid;
+    place-items: center;
+    /* max-width: 50vh; */
+    min-height: 50vh;
+    padding: 1.5em;
+  }
+  
+  
+  .container {
+    max-width: auto;
+    min-height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  
+    border: 1px solid rgba(255, 255, 255, .25);
+    border-radius: 20px;
+    background-color: rgba(255, 255, 255, 0.45);
+    box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
+  
+    backdrop-filter: blur(15px);
+  }
+  
+
+
+.card.genre-anime {
+  background-color: #ffcdd2;
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(15px);
 }
+.card.genre-action {
+  background-color: rgba(0, 255, 234, 0.579);
+  background-color: rgba(255, 255, 255, 0.45);
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(15px);
+}
+.card.genre-horror {
+  background-color: #e3690b;
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(15px);
+}
+.card.genre-drama {
+  background-color: #b3e5fc;
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(15px);
+}
+.card.genre-sci-fi {
+  background-color: #fcddb3bb;
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(15px);
+}
+.card.genre-comedy {
+  background-color: #f13a3a96;
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(15px);
+}
+
+.thunder {
+  min-width: auto;
+  max-height: 250px;
+  flex-direction: column;
+  justify-content: space-between;  
+}
+
+

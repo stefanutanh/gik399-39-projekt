@@ -1,151 +1,145 @@
 const url = "http://localhost:3000/films";
-const filmForm = document.querySelector('#filmForm'); 
+
+const filmForm = document.querySelector('#filmForm');
 const listContainer = document.querySelector('#listContainer');
+const submitButton = document.querySelector('.btn-primary');
 
+console.log('Initial DOM elements loaded:', { filmForm, listContainer, submitButton });
 
+let tasks = [];
 
+const showModalMessage = message => {
+    console.log('Showing modal with message:', message);
+    const modal = new bootstrap.Modal(document.querySelector('#messageModal'));
+    document.querySelector('#modalMessage').textContent = message;
+    modal.show();
+};
 
-// Hämtar filmer från servern
-fetch(url)
-  .then((response) => {
-    console.log('Hämtar filmer...');
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-    console.log('Hämtning utförd!');
-    return response.json();
-  })
-  .then((films) => {
-    console.log('Hämtade filmer från databasen: ', films);
-    const ul = document.createElement('ul');
-
-    // Loopa igenom filmer och skapa li-element för varje film
-    films.forEach(film => {
-        
-        const li = document.createElement('li');
-        li.innerHTML = `Title: ${film.title} // Year: ${film.year} // Director: ${film.director} // Genre: ${film.genre}`; 
-        
-        if (film.genre === 'Anime') {
-          li.style.backgroundColor = 'red';
-        }
-
-        // Skapa och ändra deleteButton
-        const deleteButton = document.createElement('button');
-        const deleteIcon = document.createElement('img'); 
-        deleteIcon.src = 'img/delete.png'; 
-        deleteIcon.alt = 'Delete'; 
-        deleteIcon.style.width = '20px';
-        deleteIcon.style.height = '20px';
-        deleteIcon.style.margin = '3px';
-        deleteButton.appendChild(deleteIcon); 
-        li.appendChild(deleteButton); 
-
-        // Skapa och ändra changeButton
-        const changeButton = document.createElement('button');
-        const changeIcon = document.createElement('img'); 
-        changeIcon.src = 'img/pencil.png'; 
-        changeIcon.alt = 'Edit'; 
-        changeIcon.style.width = '20px';
-        changeIcon.style.height = '20px';
-        changeIcon.style.margin = '3px';
-        changeButton.appendChild(changeIcon); 
-        li.appendChild(changeButton); 
-
-       
-        ul.appendChild(li); 
-
-      
-        deleteButton.addEventListener('click', () => {
-          console.log('Delete button clicked for film:', film);
-          if (confirm('Är du säker på att du vill ta bort denna film?')) {
-            console.log('Confirmed deletion for film:', film.title);
-            fetch(`${url}/${film.id}`, { method: 'DELETE' })
-              .then((response) => {
-                if (!response.ok) {
-                  throw new Error(`Error deleting film: ${response.statusText}`);
-                }
-                console.log('Film successfully deleted from server:', film.title);
-                li.remove();
-              })
-              .catch((error) => console.error('Error removing film:', error));
-          } else {
-            console.log('Deletion canceled for film:', film.title);
-          }
-        });
-
-        changeButton.addEventListener('click', () => {
-          console.log('Change button clicked for film:', film);
-
-          filmForm.title.value = film.title;
-          filmForm.year.value = film.year;
-          filmForm.director.value = film.director;
-          filmForm.genre.value = film.genre;
-
-          filmForm.dataset.editingFilmId = film.id;
-        });
-    });
-    listContainer.appendChild(ul);
-    console.log('Alla filmer hämtade.');
-  })
-  .catch((error) => console.error('Error fetching films:', error));
-
-// Hanterar formulärets submit-knapp
-filmForm.addEventListener('submit', handleSubmit);
-
-// HANDLESUBMITFUNKTION
-function handleSubmit(e) {
-  e.preventDefault();
-  console.log('Form submitted.');
-  
-  const serverfilmObject = {
-    title: filmForm.title.value,
-    year: filmForm.year.value,
-    director: filmForm.director.value,
-    genre: filmForm.genre.value,
+const handleSubmit = async (e) => {
+    e.preventDefault();
     
-  };
+    const { title, year, director, genre } = filmForm;
+    console.log('Form values:', { title: title.value, year: year.value, director: director.value, genre: genre.value });
 
-  const jsonData = JSON.stringify(serverfilmObject);
-  console.log('JSON data to send:', jsonData);
+    if (!title.value || !year.value || !director.value || !genre.value) {
+        console.log('Form validation failed - missing fields');
+        showModalMessage('Vänligen fyll i alla fält');
+        return;
+    }
 
-  console.log('Film data from form:', serverfilmObject);
+    const task = {
+        title: title.value,
+        year: year.value,
+        director: director.value,
+        genre: genre.value,
+    };
 
-  if (!filmForm.title.value || !filmForm.year.value || !filmForm.director.value || !filmForm.genre.value) {
-    alert('Vänligen fyll i alla fält');
-    console.log('Form validation failed. Missing fields.');
-    return;
-  }
-  
+    const editingId = filmForm.dataset.editingFilmId;
+    console.log('Submitting form with mode:', editingId ? 'edit' : 'create');
 
-  const editingFilmId = filmForm.dataset.editingFilmId;
-  const method = editingFilmId ? 'PUT' : 'POST';
-  const endpoint = editingFilmId ? `${url}/${editingFilmId}` : url;
-  
-  
+    const method = editingId ? 'PUT' : 'POST';
+    const endpoint = editingId ? `${url}/${editingId}` : url;
 
-  const filmRequest = new Request(url, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: jsonData,
-  }); 
+    try {
+        console.log('Making API request to:', endpoint, 'with data:', task);
+        const response = await fetch(endpoint, {
+            method,
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify(task)
+        });
 
-  console.log('Sending POST request to server...');
-  fetch(filmRequest)
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`Error adding film: ${response.statusText}`);
-      }
-      console.log('Film successfully added to server.');
-      filmForm.reset();
-      console.log("Rensar fält");
-      return response.json();
-    })
-    .then((data) => {
-      console.log('Response from server after adding film:', data);
-      const newFilmHtml = `<p>${data.title}</p>`;
-      document.body.insertAdjacentHTML('beforeend', newFilmHtml);
-      console.log('New film added to DOM:', data.title);
-      
-    })
-    .catch((error) => console.error('Error adding film:', error));
-}
+        if (!response.ok) throw new Error(`Error ${method === 'PUT' ? 'updating' : 'adding'} film`);
+
+        filmForm.reset();
+        if (editingId) {
+            delete filmForm.dataset.editingFilmId;
+            submitButton.textContent = 'Submit';
+        }
+        
+        showModalMessage(`Filmen har ${editingId ? 'uppdaterats' : 'lagts till'}!`);
+        await filmLista();
+    } catch (error) {
+        console.error('API request failed:', error);
+    }
+};
+
+const createFilmCard = (film) => {
+    
+    const genreText = [...document.querySelectorAll('#genreInput option')]
+        .find(option => option.value === film.genre)?.textContent || film.genre;
+
+    const col = document.createElement('div');
+    col.className = 'thunder d-flex col-3 col-md-2 col-sm m-2';
+    
+    col.innerHTML = `
+        <div class="card genre-${film.genre.toLowerCase()}">
+            <div class="card-body">
+                <h5 class="card-title">${film.title} <span class="text-muted">(${film.year})</span></h5>
+                <p class="card-text">
+                    <strong>Director:</strong> ${film.director}<br>
+                    <strong>Genre:</strong> ${genreText}
+                </p>
+                <div class="card-footer bg-transparent border-0 pt-0">
+                    <button onclick="editFilm(${film.id})" class="btn btn-warning btn-sm">Edit</button>
+                    <button onclick="deleteFilm(${film.id})" class="btn btn-danger btn-sm">Delete</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    return col;
+};
+
+const filmLista = async () => {
+    console.log('Fetching film list');
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        
+        tasks = await response.json();
+        console.log('Retrieved films:', tasks);
+
+        listContainer.innerHTML = '';
+        const fragment = document.createDocumentFragment();
+        tasks.forEach(film => fragment.appendChild(createFilmCard(film)));
+        listContainer.appendChild(fragment);
+    } catch (error) {
+        console.error('Error fetching tasks:', error);
+    }
+};
+
+const editFilm = (id) => {
+    console.log('Editing film with ID:', id);
+    const film = tasks.find(task => task.id === id);
+    if (!film) {
+        console.warn('Film not found with ID:', id);
+        return;
+    }
+
+    ['title', 'year', 'director', 'genreInput'].forEach(field => {
+        document.querySelector(`#${field}`).value = film[field.replace('Input', '')];
+    });
+
+    submitButton.textContent = 'Updatera Film';
+    filmForm.dataset.editingFilmId = id;
+    document.querySelector('#title').scrollIntoView({ behavior: 'smooth' });
+};
+
+const deleteFilm = async (id) => {
+    console.log('Attempting to delete film with ID:', id);
+    try {
+        const response = await fetch(`${url}/${id}`, { method: 'DELETE' });
+        if (!response.ok) throw new Error('Error deleting film');
+        
+        tasks = tasks.filter(task => task.id !== id);
+        console.log('Film deleted successfully, remaining films:', tasks);
+        await filmLista();
+        showModalMessage('Filmen har tagits bort!');
+    } catch (error) {
+        console.error('Error removing film:', error);
+    }
+};
+
+filmForm.addEventListener('submit', handleSubmit);
+console.log('Submit event listener added to form');
+filmLista();
